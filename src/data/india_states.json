@@ -1,0 +1,237 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Andhra Pradesh",
+        "law": "Andhra Pradesh Prohibition Act, 1995"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[77,15],[78,15],[78,16],[77,16],[77,15]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Arunachal Pradesh",
+        "law": "Arunachal Pradesh Forest Act, 2006"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[93,27],[94,27],[94,28],[93,28],[93,27]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Assam",
+        "law": "Assam Land Revenue Regulation Act, 1886"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[91,26],[92,26],[92,27],[91,27],[91,26]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bihar",
+        "law": "Bihar Prohibition and Excise Act, 2016"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[85,25],[86,25],[86,26],[85,26],[85,25]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chhattisgarh",
+        "law": "Chhattisgarh Excise Act, 1915"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[81,21],[82,21],[82,22],[81,22],[81,21]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Delhi",
+        "law": "Delhi Excise Act, 2009"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[77,28],[77.5,28],[77.5,28.5],[77,28.5],[77,28]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Goa",
+        "law": "Goa, Daman and Diu Excise Duty Act, 1964"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[74,15],[74.5,15],[74.5,15.5],[74,15.5],[74,15]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gujarat",
+        "law": "Bombay Prohibition Act, 1949 (applicable in Gujarat)"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[71,22],[72,22],[72,23],[71,23],[71,22]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Haryana",
+        "law": "Haryana Prohibition of Beggary Act, 1951"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[76,29],[77,29],[77,30],[76,30],[76,29]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Himachal Pradesh",
+        "law": "Himachal Pradesh Ceiling on Land Holdings Act, 1972"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[77,31],[78,31],[78,32],[77,32],[77,31]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Jharkhand",
+        "law": "Jharkhand Excise Act, 1915"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[85,23],[86,23],[86,24],[85,24],[85,23]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Karnataka",
+        "law": "Karnataka Excise Act, 1965"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[75,14],[76,14],[76,15],[75,15],[75,14]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kerala",
+        "law": "Kerala Abkari Act, 1902"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[76,9],[77,9],[77,10],[76,10],[76,9]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Madhya Pradesh",
+        "law": "Madhya Pradesh Excise Act, 1915"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[78,22],[79,22],[79,23],[78,23],[78,22]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Maharashtra",
+        "law": "Maharashtra Control of Organized Crime Act, 1999"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[73,18],[74,18],[74,19],[73,19],[73,18]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Manipur",
+        "law": "Manipur Liquor Prohibition Act, 1991"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[94,24],[95,24],[95,25],[94,25],[94,24]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Meghalaya",
+        "law": "Meghalaya Forest Regulation Act, 1973"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[91,25],[92,25],[92,26],[91,26],[91,25]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mizoram",
+        "law": "Mizoram Liquor Total Prohibition Act, 1995"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[92,23],[93,23],[93,24],[92,24],[92,23]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nagaland",
+        "law": "Nagaland Liquor Total Prohibition Act, 1989"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[94,26],[95,26],[95,27],[94,27],[94,26]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Odisha",
+        "law": "Odisha Excise Act, 2008"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[84,20],[85,20],[85,21],[84,21],[84,20]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Punjab",
+        "law": "Punjab Excise Act, 1914"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[75,30],[76,30],[76,31],[75,31],[75,30]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rajasthan",
+        "law": "Rajasthan Tenancy Act, 1955"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[74,26],[75,26],[75,27],[74,27],[74,26]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sikkim",
+        "law": "Sikkim Forest, Water Courses and Road Reserve (Preservation and Protection) Act, 1988"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[88,27],[88.5,27],[88.5,27.5],[88,27.5],[88,27]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tamil Nadu",
+        "law": "Tamil Nadu Prohibition Act, 1937"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[78,10],[79,10],[79,11],[78,11],[78,10]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Telangana",
+        "law": "Telangana Prohibition Act, 1995"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[78,17],[79,17],[79,18],[78,18],[78,17]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tripura",
+        "law": "Tripura Excise Act, 1987"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[91,23],[92,23],[92,24],[91,24],[91,23]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Uttar Pradesh",
+        "law": "UP Urban Buildings (Regulation of Letting) Act, 1972"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[80,26],[81,26],[81,27],[80,27],[80,26]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Uttarakhand",
+        "law": "Uttarakhand Zamindari Abolition and Land Reforms Act"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[78,30],[79,30],[79,31],[78,31],[78,30]]] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "West Bengal",
+        "law": "West Bengal Land Reforms Act, 1955"
+      },
+      "geometry": { "type": "Polygon", "coordinates": [[[88,22],[89,22],[89,23],[88,23],[88,22]]] }
+    }
+  ]
+}
