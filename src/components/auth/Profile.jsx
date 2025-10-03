@@ -1,18 +1,38 @@
 // src/components/auth/Profile.jsx
+import { useEffect, useState } from "react";
+import { db } from "../../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+
 export default function Profile({ onLogout }) {
   const email = localStorage.getItem("currentUser");
   const name = localStorage.getItem(`userName_${email}`) || "User";
+  const userDocRef = doc(db, "users", email);
 
-  // get stats
-  const quizScore = parseInt(localStorage.getItem(`quizScore_${email}`) || "0", 10);
-  const wordleScore = parseInt(localStorage.getItem(`wordleScore_${email}`) || "0", 10);
-  const lawScore = parseInt(localStorage.getItem(`lawScore_${email}`) || "0", 10);
-  const postsCount = parseInt(localStorage.getItem(`postsCount_${email}`) || "0", 10);
+  const [stats, setStats] = useState({
+    quizScore: 0,
+    wordleScore: 0,
+    lawScore: 0,
+    postsCount: 0,
+  });
 
-  // total points
+  useEffect(() => {
+    const unsub = onSnapshot(userDocRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        setStats({
+          quizScore: data.quizScore || 0,
+          wordleScore: data.wordleScore || 0,
+          lawScore: data.lawScore || 0,
+          postsCount: data.postsCount || 0,
+        });
+      }
+    });
+    return () => unsub();
+  }, [userDocRef]);
+
+  const { quizScore, wordleScore, lawScore, postsCount } = stats;
+
   const totalPoints = quizScore + wordleScore + lawScore + postsCount * 2;
-
-  // badge logic
   let badge = "Beginner";
   if (totalPoints >= 30) badge = "Gold";
   else if (totalPoints >= 15) badge = "Silver";
@@ -31,12 +51,10 @@ export default function Profile({ onLogout }) {
         <h1 className="text-2xl font-bold text-slate-800">{name}</h1>
         <p className="text-slate-600 mb-6">{email}</p>
 
-        {/* Badge */}
         <div className="bg-gradient-to-r from-indigo-600 to-pink-500 text-white inline-block px-6 py-2 rounded-full mb-6 shadow">
           {badge} Badge
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-slate-700">
           <div className="bg-white/80 rounded-xl p-4 shadow">
             <p className="font-semibold">Quiz</p>

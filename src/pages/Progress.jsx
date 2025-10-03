@@ -1,19 +1,39 @@
 // src/pages/Progress.jsx
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+
 export default function Progress() {
   const email = localStorage.getItem("currentUser");
   const name = localStorage.getItem(`userName_${email}`) || "User";
+  const userDocRef = doc(db, "users", email);
 
-  // scores per user
-  const quizScore = parseInt(localStorage.getItem(`quizScore_${email}`) || "0", 10);
-  const wordleScore = parseInt(localStorage.getItem(`wordleScore_${email}`) || "0", 10);
-  const lawScore = parseInt(localStorage.getItem(`lawScore_${email}`) || "0", 10);
-  const postsCount = parseInt(localStorage.getItem(`postsCount_${email}`) || "0", 10);
+  const [stats, setStats] = useState({
+    quizScore: 0,
+    wordleScore: 0,
+    lawScore: 0,
+    postsCount: 0,
+  });
 
-  // total progress points
+  useEffect(() => {
+    const unsub = onSnapshot(userDocRef, (snap) => {
+      if (snap.exists()) {
+        const d = snap.data();
+        setStats({
+          quizScore: d.quizScore || 0,
+          wordleScore: d.wordleScore || 0,
+          lawScore: d.lawScore || 0,
+          postsCount: d.postsCount || 0,
+        });
+      }
+    });
+    return () => unsub();
+  }, [userDocRef]);
+
+  const { quizScore, wordleScore, lawScore, postsCount } = stats;
   const totalPoints = quizScore + wordleScore + lawScore + postsCount * 2;
   const progressPercent = Math.min((totalPoints / 50) * 100, 100);
 
-  // badge logic
   let badge = "Beginner";
   if (totalPoints >= 30) badge = "Gold";
   else if (totalPoints >= 15) badge = "Silver";
@@ -28,7 +48,6 @@ export default function Progress() {
           Your Progress
         </h1>
 
-        {/* Badge */}
         <div className="text-center mb-8">
           <span className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-pink-500 text-white text-lg font-semibold shadow-md">
             {badge} Badge
@@ -38,7 +57,6 @@ export default function Progress() {
           </p>
         </div>
 
-        {/* Progress Bar */}
         <div className="bg-white/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-indigo-100 mb-10">
           <p className="font-medium text-slate-700 mb-2">Overall Progress</p>
           <div className="w-full bg-gray-200 rounded-full h-4">
@@ -52,7 +70,6 @@ export default function Progress() {
           </p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white/90 backdrop-blur-md rounded-xl p-6 shadow-lg border border-indigo-100 hover:shadow-xl transition">
             <p className="font-semibold text-indigo-700">Quiz Score</p>

@@ -1,23 +1,51 @@
 // src/pages/Wordle.jsx
-import { useState } from "react";
-import wordleQuestions from "../data/wordleData"; // your questions
+import { useState, useEffect } from "react";
+import wordleQuestions from "../data/wordleData";
+import { db } from "../firebase";
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function Wordle() {
-  const email = localStorage.getItem("currentUser"); // current logged-in user
+  const email = localStorage.getItem("currentUser");
+  const userDocRef = doc(db, "users", email);
 
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  // Load existing wordleScore on mount
+  useEffect(() => {
+    async function loadScore() {
+      const snap = await getDoc(userDocRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.wordleScore != null) {
+          setScore(data.wordleScore);
+        }
+      } else {
+        // initialize user doc if not exists
+        await setDoc(userDocRef, {
+          quizScore: 0,
+          wordleScore: 0,
+          lawScore: 0,
+          postsCount: 0,
+          updatedAt: serverTimestamp(),
+        });
+      }
+    }
+    loadScore().catch(console.error);
+  }, [userDocRef]);
+
   const handleAnswer = (index) => {
     setSelected(index);
   };
 
-  const handleNext = () => {
-    // check answer
-    if (selected === wordleQuestions[currentQ].answer) {
-      setScore(score + 1);
+  const handleNext = async () => {
+    const isCorrect = selected === wordleQuestions[currentQ].answer;
+    let newScore = score;
+    if (isCorrect) {
+      newScore = score + 1;
+      setScore(newScore);
     }
 
     const next = currentQ + 1;
@@ -25,22 +53,33 @@ export default function Wordle() {
       setCurrentQ(next);
       setSelected(null);
     } else {
-      // finished
       setFinished(true);
 
-      // store score per user
-      localStorage.setItem(
-        `wordleScore_${email}`,
-        score + (selected === wordleQuestions[currentQ].answer ? 1 : 0)
-      );
+      // persist new wordleScore
+      try {
+        await updateDoc(userDocRef, {
+          wordleScore: newScore,
+          updatedAt: serverTimestamp(),
+        });
+      } catch (err) {
+        // fallback if doc not exists
+        await setDoc(
+          userDocRef,
+          {
+            wordleScore: newScore,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
+      }
     }
   };
 
   const restart = () => {
     setCurrentQ(0);
     setSelected(null);
-    setScore(0);
     setFinished(false);
+    // Note: we aren't resetting the Firestore value here, unless you want to
   };
 
   return (

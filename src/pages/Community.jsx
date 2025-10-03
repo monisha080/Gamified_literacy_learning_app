@@ -1,45 +1,81 @@
 // src/pages/Community.jsx
 import { useState, useEffect } from "react";
+import { db } from "../firebase";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 
 export default function Community() {
   const [posts, setPosts] = useState([]);
   const [form, setForm] = useState({ article: "", law: "" });
 
-  // get current user email
   const email = localStorage.getItem("currentUser");
+  const userDocRef = doc(db, "users", email);
+  const postsColRef = collection(db, "users", email, "posts"); // subcollection
 
-  // load posts for this user on mount
+  // load existing posts on mount
   useEffect(() => {
-    if (email) {
-      const savedPosts = JSON.parse(localStorage.getItem(`posts_${email}`) || "[]");
-      setPosts(savedPosts);
-    }
-  }, [email]);
+    async function loadPosts() {
+      const snap = await getDoc(userDocRef);
+      if (!snap.exists()) {
+        // initialize user doc
+        await setDoc(userDocRef, {
+          quizScore: 0,
+          wordleScore: 0,
+          lawScore: 0,
+          postsCount: 0,
+          updatedAt: serverTimestamp(),
+        });
+      }
 
-  const handleSubmit = (e) => {
+      // load posts subcollection
+      const q = query(postsColRef, orderBy("createdAt", "desc"));
+      const querySnap = await getDocs(q);
+      const arr = querySnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setPosts(arr);
+    }
+    loadPosts().catch(console.error);
+  }, [userDocRef, postsColRef]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.article || !form.law) return;
 
-    const newPost = { ...form, id: Date.now() };
+    const newPost = {
+      article: form.article,
+      law: form.law,
+      createdAt: serverTimestamp(),
+    };
 
-    // update state
-    const updatedPosts = [newPost, ...posts];
-    setPosts(updatedPosts);
+    try {
+      // add to subcollection
+      const docRef = await addDoc(postsColRef, newPost);
 
-    // save to localStorage (per user)
-    localStorage.setItem(`posts_${email}`, JSON.stringify(updatedPosts));
+      // increment postsCount in user doc using updateDoc
+      await updateDoc(userDocRef, {
+        postsCount: (await getDoc(userDocRef)).data().postsCount + 1,
+        updatedAt: serverTimestamp(),
+      });
 
-    // increment community posts count (per user)
-    const postsCount = parseInt(localStorage.getItem(`postsCount_${email}`) || "0", 10) + 1;
-    localStorage.setItem(`postsCount_${email}`, postsCount);
-
-    // clear form
-    setForm({ article: "", law: "" });
+      // update local UI
+      setPosts([{ id: docRef.id, ...newPost }, ...posts]);
+      setForm({ article: "", law: "" });
+    } catch (err) {
+      console.error("Error posting:", err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-6 py-16 relative overflow-hidden">
-      {/* subtle pattern */}
       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,#6366f1_1px,transparent_0)] bg-[size:40px_40px]"></div>
 
       <div className="relative z-10">
@@ -47,7 +83,6 @@ export default function Community() {
           Community Engine
         </h1>
 
-        {/* Upload Form */}
         <form
           onSubmit={handleSubmit}
           className="max-w-2xl mx-auto bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-indigo-100 mb-12"
@@ -82,12 +117,9 @@ export default function Community() {
           </button>
         </form>
 
-        {/* Posts */}
         <div className="max-w-3xl mx-auto space-y-6">
           {posts.length === 0 ? (
-            <p className="text-center text-gray-500">
-              No posts yet. Be the first!
-            </p>
+            <p className="text-center text-gray-500">No posts yet. Be the first!</p>
           ) : (
             posts.map((p) => (
               <div

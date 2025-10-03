@@ -1,43 +1,82 @@
 // src/pages/Quiz.jsx
-import { useState } from "react";
-import quizQuestions from "../data/quizData"; // your 10 questions
+import { useState, useEffect } from "react";
+import quizQuestions from "../data/quizData";
+import { db } from "../firebase";
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function Quiz() {
-  const email = localStorage.getItem("currentUser"); // current logged-in user
+  const email = localStorage.getItem("currentUser"); // or use auth.currentUser.email
+  const userDocRef = doc(db, "users", email); // using email as doc id
 
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  // load existing quizScore (if any) when component mounts
+  useEffect(() => {
+    async function loadScore() {
+      const snap = await getDoc(userDocRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.quizScore != null) {
+          setScore(data.quizScore);
+        }
+      } else {
+        // initialize user doc
+        await setDoc(userDocRef, {
+          quizScore: 0,
+          wordleScore: 0,
+          lawScore: 0,
+          postsCount: 0,
+          updatedAt: serverTimestamp(),
+        });
+      }
+    }
+    loadScore().catch(console.error);
+  }, [userDocRef]);
+
   const handleAnswer = (index) => {
     setSelected(index);
   };
 
-  const handleNext = () => {
-    // check answer
-    if (selected === quizQuestions[currentQ].answer) {
-      setScore(score + 1);
+  const handleNext = async () => {
+    const isCorrect = selected === quizQuestions[currentQ].answer;
+    const next = currentQ + 1;
+
+    let newScore = score;
+    if (isCorrect) {
+      newScore = score + 1;
+      setScore(newScore);
     }
 
-    // move to next
-    const next = currentQ + 1;
     if (next < quizQuestions.length) {
       setCurrentQ(next);
       setSelected(null);
     } else {
-      // finished
       setFinished(true);
 
-      // store score per user
-      localStorage.setItem(`quizScore_${email}`, score + (selected === quizQuestions[currentQ].answer ? 1 : 0));
+      // write new quiz score to Firestore
+      try {
+        // Use updateDoc to update only quizScore (and updatedAt)
+        await updateDoc(userDocRef, {
+          quizScore: newScore,
+          updatedAt: serverTimestamp(),
+        });
+      } catch (err) {
+        // If doc doesn't exist, fallback to setDoc with merge
+        await setDoc(userDocRef, {
+          quizScore: newScore,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+      }
     }
   };
 
   const restartQuiz = () => {
     setCurrentQ(0);
     setSelected(null);
-    setScore(0);
+    // Note: you may or may not want to reset the persisted score
     setFinished(false);
   };
 

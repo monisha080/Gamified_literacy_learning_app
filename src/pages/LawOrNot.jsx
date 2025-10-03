@@ -1,23 +1,51 @@
 // src/pages/LawOrNot.jsx
-import { useState } from "react";
-import lawOrNotQuestions from "../data/lawOrNotData"; // your questions
+import { useState, useEffect } from "react";
+import lawOrNotQuestions from "../data/lawOrNotData";
+import { db } from "../firebase";
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function LawOrNot() {
-  const email = localStorage.getItem("currentUser"); // current logged-in user
+  const email = localStorage.getItem("currentUser");
+  const userDocRef = doc(db, "users", email);
 
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  // load existing lawScore on mount
+  useEffect(() => {
+    async function loadScore() {
+      const snap = await getDoc(userDocRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.lawScore != null) {
+          setScore(data.lawScore);
+        }
+      } else {
+        // initialize if doc doesn't exist
+        await setDoc(userDocRef, {
+          quizScore: 0,
+          wordleScore: 0,
+          lawScore: 0,
+          postsCount: 0,
+          updatedAt: serverTimestamp(),
+        });
+      }
+    }
+    loadScore().catch(console.error);
+  }, [userDocRef]);
+
   const handleAnswer = (index) => {
     setSelected(index);
   };
 
-  const handleNext = () => {
-    // check answer
-    if (selected === lawOrNotQuestions[currentQ].answer) {
-      setScore(score + 1);
+  const handleNext = async () => {
+    const isCorrect = selected === lawOrNotQuestions[currentQ].answer;
+    let newScore = score;
+    if (isCorrect) {
+      newScore = score + 1;
+      setScore(newScore);
     }
 
     const next = currentQ + 1;
@@ -25,21 +53,30 @@ export default function LawOrNot() {
       setCurrentQ(next);
       setSelected(null);
     } else {
-      // finished
       setFinished(true);
 
-      // store score per user
-      localStorage.setItem(
-        `lawScore_${email}`,
-        score + (selected === lawOrNotQuestions[currentQ].answer ? 1 : 0)
-      );
+      // persist new lawScore to Firestore
+      try {
+        await updateDoc(userDocRef, {
+          lawScore: newScore,
+          updatedAt: serverTimestamp(),
+        });
+      } catch (err) {
+        await setDoc(
+          userDocRef,
+          {
+            lawScore: newScore,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
+      }
     }
   };
 
   const restart = () => {
     setCurrentQ(0);
     setSelected(null);
-    setScore(0);
     setFinished(false);
   };
 
