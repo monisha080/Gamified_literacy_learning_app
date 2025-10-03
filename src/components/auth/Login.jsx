@@ -1,31 +1,44 @@
 // src/components/auth/Login.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+ // ✅ fixed path
 import constitutionImg from "../../assets/constitution.jpg";
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // store the current user
-    localStorage.setItem("currentUser", email);
+    try {
+      // Firebase login
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    // if no name exists yet for this email, give a default
-    if (!localStorage.getItem(`userName_${email}`)) {
-      localStorage.setItem(`userName_${email}`, "User");
+      // Save to localStorage
+      localStorage.setItem("currentUser", email);
+      if (user.displayName) {
+        localStorage.setItem(`userName_${email}`, user.displayName);
+      } else if (!localStorage.getItem(`userName_${email}`)) {
+        localStorage.setItem(`userName_${email}`, "User");
+      }
+
+      if (onLogin) onLogin();
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (err) {
+      setError(err.message);
     }
-
-    if (onLogin) onLogin();
-    setSuccess(true);
-
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
   };
 
   return (
@@ -37,11 +50,19 @@ export default function Login({ onLogin }) {
           <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-transparent mb-6">
             Login to Your Account
           </h2>
+
           {success && (
             <div className="mb-4 p-3 text-green-800 bg-green-100 border border-green-200 rounded-xl text-center animate-pulse">
               ✅ Login successful! Redirecting…
             </div>
           )}
+
+          {error && (
+            <div className="mb-4 p-3 text-red-800 bg-red-100 border border-red-200 rounded-xl text-center">
+              ❌ {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-gray-700 font-medium mb-1">Email</label>

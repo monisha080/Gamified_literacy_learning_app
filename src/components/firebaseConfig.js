@@ -3,7 +3,7 @@
 // Import the function to initialize Firebase
 import { initializeApp } from "firebase/app";
 import {getAuth} from "firebase/auth";
-import {getFirestore} from "firebase/firestore";
+
 
 // ✅ FIXED: storageBucket should end in .appspot.com
 const firebaseConfig = {
@@ -18,9 +18,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export let _Auth=getAuth(app);
-
-export let _DB=getFirestore(app)
+export const auth = getAuth(app);
 
 // Export the Firebase app so other files can use it
 export default app;

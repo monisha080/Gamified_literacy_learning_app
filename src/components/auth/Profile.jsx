@@ -31,7 +31,7 @@ export default function Profile({ onLogout }) {
         <h1 className="text-2xl font-bold text-slate-800">{name}</h1>
         <p className="text-slate-600 mb-6">{email}</p>
 
-        {/* Badges */}
+        {/* Badge */}
         <div className="bg-gradient-to-r from-indigo-600 to-pink-500 text-white inline-block px-6 py-2 rounded-full mb-6 shadow">
           {badge} Badge
         </div>

@@ -1,6 +1,9 @@
 // src/components/auth/Register.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+
 import constitutionImg from "../../assets/constitution.jpg";
 
 export default function Register({ onRegister }) {
@@ -8,21 +11,33 @@ export default function Register({ onRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // Save name and email per user
-    localStorage.setItem("currentUser", email); // logged-in user
-    localStorage.setItem(`userName_${email}`, name);
+    try {
+      // Create user with Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-    if (onRegister) onRegister();
-    setSuccess(true);
+      // Update user profile
+      await updateProfile(userCredential.user, { displayName: name });
 
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+      // Save user info in localStorage
+      localStorage.setItem("currentUser", email);
+      localStorage.setItem(`userName_${email}`, name);
+
+      if (onRegister) onRegister();
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -34,11 +49,19 @@ export default function Register({ onRegister }) {
           <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-transparent mb-6">
             Create Your Account
           </h2>
+
           {success && (
             <div className="mb-4 p-3 text-green-800 bg-green-100 border border-green-200 rounded-xl text-center animate-pulse">
               ✅ Account created! Redirecting…
             </div>
           )}
+
+          {error && (
+            <div className="mb-4 p-3 text-red-800 bg-red-100 border border-red-200 rounded-xl text-center">
+              ❌ {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-gray-700 font-medium mb-1">Name</label>
@@ -77,6 +100,7 @@ export default function Register({ onRegister }) {
               Create Account
             </button>
           </form>
+
           <p className="text-center text-gray-500 mt-6">
             Already have an account?{" "}
             <Link to="/login" className="text-indigo-600 font-medium hover:underline">
