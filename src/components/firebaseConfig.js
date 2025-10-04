@@ -1,26 +1,26 @@
 // src/utils/firebaseconfig.js
 
-// Import the function to initialize Firebase
+// Import Firebase SDKs
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import {getAuth} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
-
-// ✅ FIXED: storageBucket should end in .appspot.com
+// ✅ Correct Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAgfA2VwtUBNeMDUPwaQHGyjzYycxVX_a0",
-  authDomain: "gamifiedliteracyapp.firebaseapp.com",
-  projectId: "gamifiedliteracyapp",
-  storageBucket: "gamifiedliteracyapp.firebasestorage.app",
-  messagingSenderId: "694639985651",
-  appId: "1:694639985651:web:63e0e7be058fb928d24886"
+  apiKey: "AIzaSyBGfBJdJT821xmS-udYp8qTY6UULxvvZyE",
+  authDomain: "gamifiedliteracyapp-506b0.firebaseapp.com",
+  projectId: "gamifiedliteracyapp-506b0",
+  storageBucket: "gamifiedliteracyapp-506b0.appspot.com",  // ✅ fixed
+  messagingSenderId: "559758321997",
+  appId: "1:559758321997:web:4781479f745dd4058aef04"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Initialize Firestore & Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Export the Firebase app so other files can use it
+// Export so you can import in other files
 export { db, auth };

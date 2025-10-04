@@ -1,7 +1,10 @@
 // src/pages/LawOrNot.jsx
 import { useState, useEffect } from "react";
 import lawOrNotQuestions from "../data/lawOrNotData";
-import { db } from "../firebase";
+import { db } from "../components/firebaseConfig";
+
+
+
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function LawOrNot() {

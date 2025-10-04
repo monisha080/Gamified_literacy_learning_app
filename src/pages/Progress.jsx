@@ -1,6 +1,6 @@
 // src/pages/Progress.jsx
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../components/firebaseConfig";
 import { doc, onSnapshot } from "firebase/firestore";
 
 export default function Progress() {

@@ -1,7 +1,8 @@
 // src/pages/Wordle.jsx
 import { useState, useEffect } from "react";
 import wordleQuestions from "../data/wordleData";
-import { db } from "../firebase";
+import { db } from "../components/firebaseConfig";
+
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function Wordle() {

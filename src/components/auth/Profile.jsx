@@ -1,6 +1,7 @@
 // src/components/auth/Profile.jsx
 import { useEffect, useState } from "react";
-import { db } from "../../firebase";
+import { db } from "../firebaseConfig";
+
 import { doc, onSnapshot } from "firebase/firestore";
 
 export default function Profile({ onLogout }) {
